@@ -36,6 +36,11 @@ function buzz(pattern) {
 
 export const fx = {
   tick() { tone(880, 90); buzz(30); },
+  // Countdown number: spoken when voice is on, otherwise a beep.
+  count(n) {
+    if (store.settings.voice && (native || 'speechSynthesis' in window)) { fx.say(String(n)); buzz(30); }
+    else fx.tick();
+  },
   start() { tone(1320, 220); buzz(120); },
   end() { tone(660, 180); tone(990, 300, 0.2); buzz([150, 80, 150]); },
   tap() { tone(1200, 40, 0, 0.12); buzz(15); },

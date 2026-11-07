@@ -90,7 +90,7 @@ const runner = {
     const whole = Math.ceil(this.left);
     if (whole !== this.lastWhole) {
       this.lastWhole = whole;
-      if (whole > 0 && whole <= 3 && this.seg.secs >= 5) fx.tick();
+      countdownCue(this.seg, whole);
     }
     if (this.left <= 0) {
       const lastOfKind = this.i === this.segs.length - 1;
@@ -98,8 +98,8 @@ const runner = {
       this.next(this.endAt);
     } else updateTimerUI();
   },
-  pause() { if (!this.running) return; this.paused = true; this.left = (this.endAt - Date.now()) / 1000; renderWorkoutControls(); },
-  resume() { if (!this.running) return; this.paused = false; this.endAt = Date.now() + this.left * 1000; renderWorkoutControls(); },
+  pause() { if (!this.running || this.paused) return; this.paused = true; this.left = (this.endAt - Date.now()) / 1000; fx.say('Paused'); renderWorkoutControls(); },
+  resume() { if (!this.running || !this.paused) return; this.paused = false; this.endAt = Date.now() + this.left * 1000; this.lastWhole = Math.ceil(this.left); fx.say('Go'); renderWorkoutControls(); },
   add(sec) { if (!this.running) return; this.endAt += sec * 1000; this.left += sec; this.seg.secs += sec; updateTimerUI(); },
   stop() { clearInterval(this.id); this.id = null; this.running = false; this.paused = false; },
 };
@@ -165,7 +165,7 @@ function startRest(secs, betweenExercises = false) {
     S.phase = 'work';
     persist();
     fx.start();
-    fx.say(betweenExercises ? `Start ${curEx().name}` : `Set ${S.set}`);
+    if (curEx().type === 'reps') fx.say(betweenExercises ? `Start ${curEx().name}` : `Set ${S.set}`);
     renderWorkout();
   });
 }
@@ -212,6 +212,15 @@ function skipExercise() {
   nextExercise();
 }
 
+// Spoken/beeped countdown inside a timed segment.
+function countdownCue(seg, whole) {
+  if (!seg || whole <= 0 || whole >= seg.secs) return;
+  if (seg.kind === 'hold' || seg.kind === 'relax') { if (whole <= 9) fx.count(whole); return; }
+  if (seg.kind === 'ready') { if (whole <= 3) fx.tick(); return; }
+  if (whole === 10 && seg.secs >= 20) { fx.say('10 seconds'); return; }
+  if (whole <= 3) fx.count(whole);
+}
+
 function setSegments(ex) {
   const ready = store.settings.getReady;
   const sides = ex.perSide ? ['left', 'right'] : [null];
@@ -219,14 +228,15 @@ function setSegments(ex) {
   sides.forEach((side, si) => {
     const sn = sideName(ex, side);
     const r = si === 0 ? ready : Math.max(ready, 5);
-    if (r) segs.push({ kind: 'ready', secs: r, label: si === 0 ? 'Get ready' : 'Switch', sub: sn, side, cue: si === 0 ? (sn || 'Get ready') : `Switch to ${sn.toLowerCase()}` });
+    const first = S.set === 1 ? ex.name : `Set ${S.set}`;
+    if (r) segs.push({ kind: 'ready', secs: r, label: si === 0 ? 'Get ready' : 'Switch', sub: sn, side, cue: si === 0 ? `${first}. ${sn || 'Get ready'}` : `Switch to ${sn.toLowerCase()}` });
     if (ex.type === 'time') {
       segs.push({ kind: 'work', secs: ex.duration, label: 'Hold', sub: sn, side, cue: '' });
     } else {
       const reps = ex.repsMax || ex.repsMin;
       for (let i = 1; i <= reps; i++) {
-        segs.push({ kind: 'hold', secs: ex.hold, label: 'Hold', sub: sn, side, rep: i, reps, cue: i === 1 ? 'Hold' : '' });
-        if (i < reps) segs.push({ kind: 'relax', secs: ex.relax, label: 'Relax', sub: sn, side, rep: i, reps, cue: '' });
+        segs.push({ kind: 'hold', secs: ex.hold, label: 'Hold', sub: sn, side, rep: i, reps, cue: i === reps && reps > 1 ? 'Last one. Hold' : 'Hold' });
+        if (i < reps) segs.push({ kind: 'relax', secs: ex.relax, label: 'Relax', sub: sn, side, rep: i, reps, cue: 'Relax' });
       }
     }
   });
@@ -306,7 +316,7 @@ function discardWorkout() {
 
 // count active time while the workout screen is visible
 setInterval(() => {
-  if (S && route() === '/workout' && document.visibilityState === 'visible' && S.phase !== 'summary') {
+  if (S && route() === '/workout' && document.visibilityState === 'visible' && S.phase !== 'summary' && !runner.paused) {
     S.elapsed++;
     const el = document.getElementById('elapsed');
     if (el) el.textContent = fmtClock(S.elapsed);
@@ -596,6 +606,7 @@ function controlsHTML(ex) {
     const sub = S.restNext === 'exercise' ? 'Get ready for the next exercise' : (S.side ? sideName(ex, S.side) : '');
     return `${ring(s ? left / s.secs : 1, fmtClock(left), 'Rest', sub)}
       <div class="row gap center">
+        <button class="btn secondary" data-act="${runner.paused ? 'timer-resume' : 'timer-pause'}">${runner.paused ? '▶ Resume' : '❚❚ Pause'}</button>
         <button class="btn secondary" data-act="rest-add">+15 s</button>
         <button class="btn primary" data-act="rest-skip">Skip rest</button>
       </div>`;
@@ -709,6 +720,8 @@ function render() {
   document.body.classList.toggle('in-workout', r === '/workout');
   if (r === '/workout') updateTimerUI();
   window.scrollTo(0, 0);
+  // Timed sets (holds, balance, plank…) start by themselves.
+  if (r === '/workout' && S && S.phase === 'work' && curEx().type !== 'reps' && !runner.running) startTimedSet();
 }
 
 // If the app was closed mid-rest, resume the set rather than an orphaned rest timer.

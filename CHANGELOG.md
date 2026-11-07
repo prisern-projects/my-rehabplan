@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.4] – 2026-11-07
+- Timed sets (holds, balance, stretch, plank) start automatically after a short "get ready".
+- Pause / Resume on every timer, including rests.
+- Voice countdown: "Hold… 3, 2, 1… Relax… 3, 2, 1" on every rep, "Last one" before the final rep.
+- Longer timers and rests count down "3, 2, 1" out loud, and say "10 seconds" near the end.
+
 ## [1.0.3] – 2026-11-07
 - The reps box is filled in with what you did last time for the same exercise, set and side.
 - Fix: the right-side reps box started at 0 instead of the target.
