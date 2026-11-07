@@ -1,0 +1,47 @@
+plugins { id 'com.android.application' }
+
+// Single source of truth for the app version: the VERSION file in the repo root.
+def appVersion = rootProject.file('VERSION').text.trim()
+def p = appVersion.tokenize('.').collect { it as int }
+
+android {
+    namespace 'no.prisern.rehab'
+    compileSdk 36
+
+    defaultConfig {
+        applicationId 'no.prisern.rehab'
+        minSdk 26
+        targetSdk 36
+        versionName appVersion
+        versionCode p[0] * 10000 + p[1] * 100 + p[2]
+        buildConfigField 'String', 'UPDATE_REPO', '"prisern-projects/my-rehabplan"'
+    }
+
+    buildFeatures { buildConfig true }
+
+    signingConfigs {
+        rehab {
+            storeFile rootProject.file('signing/rehab-release.jks')
+            storePassword 'rehabplan'
+            keyAlias 'rehab'
+            keyPassword 'rehabplan'
+        }
+    }
+
+    buildTypes {
+        release { minifyEnabled false; signingConfig signingConfigs.rehab }
+        debug { signingConfig signingConfigs.rehab }
+    }
+
+    // The app's screens are the web files in /web, bundled into the APK.
+    sourceSets { main { assets.srcDirs = [rootProject.file('web')] } }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation 'androidx.webkit:webkit:1.12.1'
+}
