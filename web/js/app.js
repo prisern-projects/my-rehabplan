@@ -178,7 +178,7 @@ function nextExercise(afterFinish = false) {
   resetSetState(ex);
   ui.howOpen = false;
   const rest = Number(store.settings.exerciseRest) || 0;
-  if (afterFinish && rest > 0) { ui.howOpen = true; startRest(rest, true); return; }
+  if (afterFinish && rest > 0) { startRest(rest, true); return; }
   persist();
   fx.say(`Next: ${ex.name}`);
   renderWorkout();

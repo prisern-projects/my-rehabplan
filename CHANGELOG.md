@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.2] – 2026-11-07
+- "How to do it" is always collapsed when a new exercise starts; tap it to open.
+
 ## [1.0.1] – 2026-11-07
 - Type your reps instead of tapping: the box is pre-filled with the target, so usually just tap "Set done".
 - Rest between sets is now 30 seconds for every exercise.
