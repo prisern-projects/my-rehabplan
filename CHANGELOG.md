@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.3] – 2026-11-07
+- The reps box is filled in with what you did last time for the same exercise, set and side.
+- Fix: the right-side reps box started at 0 instead of the target.
+
 ## [1.0.2] – 2026-11-07
 - "How to do it" is always collapsed when a new exercise starts; tap it to open.
 

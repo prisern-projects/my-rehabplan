@@ -126,9 +126,19 @@ function startWorkout() {
   go('/workout');
 }
 
+function repsKey(side) { return `${S.set}${side ? side[0].toUpperCase() : ''}`; }
+
+// Pre-fill the reps box with what you did last time (same set and side), else the target.
+function prefillReps(ex) {
+  if (ex.type !== 'reps') { S.reps = 0; S.fromLast = false; return; }
+  const last = store.lastReps(ex.id, repsKey(S.side));
+  S.fromLast = last != null;
+  S.reps = last != null ? last : (ex.repsMax || ex.repsMin);
+}
+
 function resetSetState(ex) {
-  S.reps = ex.type === 'reps' ? (ex.repsMax || ex.repsMin) : 0;
   S.side = ex.perSide ? 'left' : null;
+  prefillReps(ex);
 }
 
 function completeSet(entry) {
@@ -252,10 +262,11 @@ function readReps() {
 
 function repDone() {
   const ex = curEx();
+  store.setLastReps(ex.id, repsKey(S.side), S.reps);
   if (ex.perSide && S.side === 'left') {
     exLog(ex).pendingLeft = S.reps;
     S.side = 'right';
-    S.reps = 0;
+    prefillReps(ex);
     fx.start();
     fx.say(`Switch to ${sideName(ex, 'right').toLowerCase()}`);
     persist();
@@ -599,7 +610,7 @@ function controlsHTML(ex) {
         <label class="reps-box"><input id="reps-input" type="number" inputmode="numeric" pattern="[0-9]*" min="0" max="999" value="${S.reps}" aria-label="Reps done"><span>reps</span></label>
         <button class="btn secondary round" data-act="rep-plus" aria-label="One more">+</button>
       </div>
-      <p class="muted small center reps-hint">Target ${target} reps. Change the number if you did fewer or more.</p>
+      <p class="muted small center reps-hint">${S.fromLast ? `Filled in from last time · target ${target}` : `Target ${target} reps`}. Change the number if you did fewer or more.</p>
       <button class="btn primary big" data-act="set-done">${ex.perSide && S.side === 'left' ? `Done → ${esc(sideName(ex, 'right'))}` : 'Set done ✓'}</button>`;
   }
 

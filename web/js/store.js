@@ -14,7 +14,7 @@ const DEFAULT_SETTINGS = {
 };
 
 function blank() {
-  return { settings: { ...DEFAULT_SETTINGS }, overrides: {}, history: [], current: null };
+  return { settings: { ...DEFAULT_SETTINGS }, overrides: {}, history: [], current: null, lastReps: {} };
 }
 
 let data = load();
@@ -60,7 +60,20 @@ export const store = {
   importJSON(text) {
     const d = JSON.parse(text);
     if (!d || !Array.isArray(d.history)) throw new Error('Not a valid backup file');
-    data = { ...blank(), settings: { ...DEFAULT_SETTINGS, ...(d.settings || {}) }, overrides: d.overrides || {}, history: d.history, current: null };
+    data = { ...blank(), settings: { ...DEFAULT_SETTINGS, ...(d.settings || {}) }, overrides: d.overrides || {}, history: d.history, current: null, lastReps: d.lastReps || {} };
+    save();
+  },
+  // Reps done last time, per exercise and per set/side (key like "2" or "2R").
+  lastReps(id, key) {
+    const m = data.lastReps[id];
+    if (!m) return null;
+    if (m[key] != null) return m[key];
+    const side = key.replace(/^\d+/, '');
+    const keys = Object.keys(m).filter((k) => k.replace(/^\d+/, '') === side).sort();
+    return keys.length ? m[keys[keys.length - 1]] : null;
+  },
+  setLastReps(id, key, reps) {
+    (data.lastReps[id] ||= {})[key] = reps;
     save();
   },
   resetAll() { data = blank(); save(); },
