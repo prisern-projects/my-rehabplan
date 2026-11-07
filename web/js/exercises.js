@@ -11,7 +11,7 @@
 
 export const PLAN_NOTE = 'Train every other day. On rest days, take short walks.';
 
-export const EXERCISES = [
+const SHEET = [
   {
     id: 'squat',
     name: 'Squat',
@@ -232,3 +232,34 @@ export const EXERCISES = [
     ],
   },
 ];
+
+// Workout order: warm up the back first, then everything standing, then the
+// floor/ball exercises, and finish with the stretch. This keeps changes of
+// position and equipment to a minimum. `sheetNo` is the number on the physio's sheet.
+const ORDER = [
+  'cat-cow',                 // warm-up: mobility on all fours
+  'seated-pelvic-tilt-ball', // warm-up: mobility sitting on the ball
+  'squat',                   // standing – legs
+  'step-up',                 // stairs
+  'calf-raise',              // stairs
+  'balance',                 // cushion / folded mat
+  'band-side-steps',         // band
+  'band-row',                // band on the wall bars
+  'biceps-curl',             // dumbbells
+  'dips',                    // bench / chair
+  'knee-pushup',             // floor
+  'knee-plank',              // floor
+  'diagonal-lift-ball',      // lying on the ball
+  'glute-bridge-ball',       // lying on your back, legs on the ball
+  'pelvic-tilt-situp',       // lying on your back
+  'hamstring-stretch',       // cool-down stretch
+];
+
+export const EXERCISES = ORDER.map((id) => {
+  const i = SHEET.findIndex((e) => e.id === id);
+  return { ...SHEET[i], sheetNo: i + 1 };
+});
+
+if (EXERCISES.length !== SHEET.length || EXERCISES.some((e) => !e.id)) {
+  throw new Error('ORDER in exercises.js must list every exercise exactly once');
+}

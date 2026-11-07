@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.5] – 2026-11-07
+- New exercise order: back warm-up first, then standing exercises, then floor and ball, ending with the hamstring stretch – fewer changes of position and equipment.
+- Each exercise shows its number on the physio's sheet.
+
 ## [1.0.4] – 2026-11-07
 - Timed sets (holds, balance, stretch, plank) start automatically after a short "get ready".
 - Pause / Resume on every timer, including rests.

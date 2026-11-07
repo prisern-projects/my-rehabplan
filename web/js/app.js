@@ -436,7 +436,7 @@ function viewPlan() {
     </a>`).join('');
   return `<header class="top"><h1>Plan</h1></header>
   <main class="page">
-    <p class="muted small">From Aktiv Fysioterapi Nittedal – "Back rehabilitation". Tap an exercise to see how to do it or change sets, reps and timers.</p>
+    <p class="muted small">From Aktiv Fysioterapi Nittedal – "Back rehabilitation". Ordered as: warm-up → standing → floor &amp; ball → stretch. Tap an exercise to see how to do it or change sets, reps and timers.</p>
     <div class="card list">${rows}</div>
   </main>
   ${nav('/plan')}`;
@@ -472,6 +472,7 @@ function viewExercise(id) {
     <div class="eyebrow">${esc(ex.area)}</div>
     <h1 class="title">${esc(ex.name)}</h1>
     <p class="target">${esc(targetText(ex))}${ex.weight ? ' · ' + esc(ex.weight) : ''}</p>
+    <p class="muted small">No. ${ex.sheetNo} on the physio's sheet</p>
     <div class="card">
       <h3>How to do it</h3>
       <ol class="steps">${ex.steps.map((s) => `<li>${esc(s)}</li>`).join('')}</ol>
