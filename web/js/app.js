@@ -47,7 +47,7 @@ function estimateSec(list) {
     if (ex.type === 'time') set = sides * (ex.duration + ready);
     else if (ex.type === 'hold') set = sides * ex.repsMax * (ex.hold + ex.relax);
     else set = sides * (ex.repsMax || ex.repsMin) * 3.5;
-    return t + ex.sets * set + (ex.sets - 1) * (store.settings.restTimer ? ex.rest : 0) + 20;
+    return t + ex.sets * set + (ex.sets - 1) * (store.settings.restTimer ? ex.rest : 0) + (Number(store.settings.exerciseRest) || 0);
   }, 0);
 }
 
@@ -119,14 +119,15 @@ function startWorkout() {
   unlockAudio();
   const list = activePlan();
   if (!list.length) { toast('No exercises enabled – check the Plan tab'); return; }
-  S = { id: uid(), startedAt: Date.now(), elapsed: 0, ids: list.map((e) => e.id), idx: 0, set: 1, side: list[0].perSide ? 'left' : null, reps: 0, phase: 'work', log: {} };
+  S = { id: uid(), startedAt: Date.now(), elapsed: 0, ids: list.map((e) => e.id), idx: 0, set: 1, side: null, reps: 0, phase: 'work', log: {} };
+  resetSetState(list[0]);
   persist();
   fx.say(`Let's go. ${list[0].name}`);
   go('/workout');
 }
 
 function resetSetState(ex) {
-  S.reps = 0;
+  S.reps = ex.type === 'reps' ? (ex.repsMax || ex.repsMin) : 0;
   S.side = ex.perSide ? 'left' : null;
 }
 
@@ -141,24 +142,25 @@ function completeSet(entry) {
     else { S.phase = 'work'; fx.say(`Set ${S.set}`); persist(); renderWorkout(); }
   } else {
     fx.done();
-    nextExercise();
+    nextExercise(true);
   }
 }
 
-function startRest(secs) {
+function startRest(secs, betweenExercises = false) {
   S.phase = 'rest';
+  S.restNext = betweenExercises ? 'exercise' : 'set';
   persist();
   renderWorkout();
-  runner.start([{ kind: 'rest', secs, label: 'Rest', cue: 'Rest' }], () => {
+  runner.start([{ kind: 'rest', secs, label: 'Rest', cue: betweenExercises ? `Rest. Next: ${curEx().name}` : 'Rest' }], () => {
     S.phase = 'work';
     persist();
     fx.start();
-    fx.say(`Set ${S.set}`);
+    fx.say(betweenExercises ? `Start ${curEx().name}` : `Set ${S.set}`);
     renderWorkout();
   });
 }
 
-function nextExercise() {
+function nextExercise(afterFinish = false) {
   runner.stop();
   const list = sessionList();
   S.idx++;
@@ -174,9 +176,11 @@ function nextExercise() {
   }
   const ex = curEx();
   resetSetState(ex);
+  ui.howOpen = false;
+  const rest = Number(store.settings.exerciseRest) || 0;
+  if (afterFinish && rest > 0) { ui.howOpen = true; startRest(rest, true); return; }
   persist();
   fx.say(`Next: ${ex.name}`);
-  ui.howOpen = false;
   renderWorkout();
 }
 
@@ -237,6 +241,13 @@ function finishTimedEarly() {
   if (ex.type === 'time') entry = { secs: s && s.kind === 'work' ? Math.round(s.secs - runner.left) : 0, partial: true };
   else entry = { reps: s && s.rep ? s.rep : 0, partial: true };
   completeSet(entry);
+}
+
+function readReps() {
+  const el = document.getElementById('reps-input');
+  if (!el) return;
+  const n = parseInt(el.value, 10);
+  S.reps = Number.isFinite(n) && n >= 0 ? Math.min(n, 999) : 0;
 }
 
 function repDone() {
@@ -494,7 +505,9 @@ function viewSettings() {
       ${toggle('Vibration', 'vibrate')}
       ${toggle('Voice cues', 'voice', '“Hold”, “Relax”, “Switch to right leg”…')}
       ${toggle('Keep screen on', 'keepAwake', 'During workouts')}
-      ${toggle('Rest timer between sets', 'restTimer')}
+      ${toggle('Rest timer between sets', 'restTimer', 'Length is set per exercise (default 30 s)')}
+      <label class="field"><span>Rest after each exercise</span>
+        <span class="seg">${[0, 15, 30, 45, 60].map((n) => `<button data-act="ex-rest" data-n="${n}" class="${st.exerciseRest === n ? 'on' : ''}">${n ? n + 's' : 'Off'}</button>`).join('')}</span></label>
       <label class="field"><span>Get-ready countdown</span>
         <span class="seg">${[0, 3, 5, 10].map((n) => `<button data-act="ready" data-n="${n}" class="${st.getReady === n ? 'on' : ''}">${n ? n + 's' : 'Off'}</button>`).join('')}</span></label>
       <button class="btn secondary" data-act="test-sound">Test sound &amp; voice</button>
@@ -569,7 +582,8 @@ function controlsHTML(ex) {
   if (S.phase === 'rest') {
     const s = runner.seg;
     const left = runner.running ? runner.left : ex.rest;
-    return `${ring(s ? left / s.secs : 1, fmtClock(left), 'Rest', S.side ? sideName(ex, S.side) : '')}
+    const sub = S.restNext === 'exercise' ? 'Get ready for the next exercise' : (S.side ? sideName(ex, S.side) : '');
+    return `${ring(s ? left / s.secs : 1, fmtClock(left), 'Rest', sub)}
       <div class="row gap center">
         <button class="btn secondary" data-act="rest-add">+15 s</button>
         <button class="btn primary" data-act="rest-skip">Skip rest</button>
@@ -580,14 +594,13 @@ function controlsHTML(ex) {
     const target = ex.repsMin === ex.repsMax ? ex.repsMin : `${ex.repsMin}–${ex.repsMax}`;
     const hit = S.reps >= ex.repsMin;
     return `${S.side ? `<div class="side-badge">${esc(sideName(ex, S.side))}</div>` : ''}
-      <button class="counter ${hit ? 'hit' : ''}" data-act="rep" aria-label="Count a rep">
-        <span class="cnum" id="cnum">${S.reps}</span>
-        <span class="csub">of ${target} reps · tap to count</span>
-      </button>
-      <div class="row gap center">
-        <button class="btn secondary round" data-act="rep-minus" aria-label="Minus one">−</button>
-        <button class="btn primary grow" data-act="set-done">${ex.perSide && S.side === 'left' ? `Done → ${esc(sideName(ex, 'right'))}` : 'Set done ✓'}</button>
-      </div>`;
+      <div class="reps-entry ${hit ? 'hit' : ''}">
+        <button class="btn secondary round" data-act="rep-minus" aria-label="One less">−</button>
+        <label class="reps-box"><input id="reps-input" type="number" inputmode="numeric" pattern="[0-9]*" min="0" max="999" value="${S.reps}" aria-label="Reps done"><span>reps</span></label>
+        <button class="btn secondary round" data-act="rep-plus" aria-label="One more">+</button>
+      </div>
+      <p class="muted small center reps-hint">Target ${target} reps. Change the number if you did fewer or more.</p>
+      <button class="btn primary big" data-act="set-done">${ex.perSide && S.side === 'left' ? `Done → ${esc(sideName(ex, 'right'))}` : 'Set done ✓'}</button>`;
   }
 
   // timed (time / hold)
@@ -627,7 +640,9 @@ function updateTimerUI() {
   const num = document.getElementById('t-num');
   num.textContent = s.kind === 'work' || s.kind === 'rest' ? fmtClock(runner.left) : Math.max(0, Math.ceil(runner.left));
   document.getElementById('t-label').textContent = s.label;
-  document.getElementById('t-sub').textContent = s.kind === 'rest' ? (S && S.side ? sideName(curEx(), S.side) : '') : timerSub(s);
+  document.getElementById('t-sub').textContent = s.kind === 'rest'
+    ? (S && S.restNext === 'exercise' ? 'Get ready for the next exercise' : (S && S.side ? sideName(curEx(), S.side) : ''))
+    : timerSub(s);
 }
 
 function renderWorkoutControls() {
@@ -704,18 +719,9 @@ const actions = {
   'pause-leave': () => { if (S.phase === 'rest') S.phase = 'work'; persist(); go('/'); },
   'end-now': () => { runner.stop(); S.phase = 'summary'; persist(); render(); },
   'back-to-workout': () => { S.phase = 'work'; persist(); render(); },
-  rep: () => {
-    unlockAudio();
-    S.reps++;
-    fx.tap();
-    const ex = curEx();
-    if (S.reps === ex.repsMax) fx.end();
-    persist();
-    const n = document.getElementById('cnum');
-    if (n) { n.textContent = S.reps; n.parentElement.classList.toggle('hit', S.reps >= ex.repsMin); n.parentElement.classList.remove('bump'); void n.offsetWidth; n.parentElement.classList.add('bump'); }
-  },
-  'rep-minus': () => { if (S.reps > 0) { S.reps--; persist(); renderWorkoutControls(); } },
-  'set-done': repDone,
+  'rep-plus': () => { unlockAudio(); readReps(); S.reps++; fx.tap(); persist(); renderWorkoutControls(); },
+  'rep-minus': () => { unlockAudio(); readReps(); if (S.reps > 0) { S.reps--; fx.tap(); persist(); renderWorkoutControls(); } },
+  'set-done': () => { unlockAudio(); readReps(); repDone(); },
   'timer-start': startTimedSet,
   'timer-pause': () => runner.pause(),
   'timer-resume': () => runner.resume(),
@@ -760,6 +766,7 @@ const actions = {
     render();
   },
   'reset-ex': () => { const id = route().slice(6); store.resetOverride(id); toast('Reset to the original plan'); render(); },
+  'ex-rest': (el) => { store.setSetting('exerciseRest', Number(el.dataset.n)); render(); },
   ready: (el) => { store.setSetting('getReady', Number(el.dataset.n)); render(); },
   'test-sound': () => { unlockAudio(); fx.tick(); setTimeout(() => fx.start(), 400); setTimeout(() => fx.say('Switch to right leg'), 900); },
   'check-update': async (el) => {
@@ -807,6 +814,19 @@ document.addEventListener('change', (e) => {
     store.setOverride(exEl.dataset.ex, { [el.dataset.field]: v });
     if (el.type === 'checkbox') render();
   }
+});
+
+document.addEventListener('focusin', (e) => { if (e.target.id === 'reps-input') setTimeout(() => e.target.select(), 0); });
+document.addEventListener('input', (e) => {
+  if (e.target.id === 'reps-input' && S) {
+    readReps();
+    persist();
+    const ex = curEx();
+    e.target.closest('.reps-entry')?.classList.toggle('hit', S.reps >= ex.repsMin);
+  }
+});
+document.addEventListener('keydown', (e) => {
+  if (e.target.id === 'reps-input' && e.key === 'Enter') { e.preventDefault(); e.target.blur(); }
 });
 
 window.addEventListener('hashchange', render);

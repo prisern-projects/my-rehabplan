@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.0.1] – 2026-11-07
+- Type your reps instead of tapping: the box is pre-filled with the target, so usually just tap "Set done".
+- Rest between sets is now 30 seconds for every exercise.
+- New 30-second rest after each exercise, showing the next exercise while you rest (change it in Settings).
+
 ## [1.0.0] – 2026-11-07
 - First version: all 16 exercises from the physio plan, in English.
 - Tap-to-count reps, countdown timers, hold/relax timer, rest timer between sets.

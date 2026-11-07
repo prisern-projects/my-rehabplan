@@ -9,6 +9,7 @@ const DEFAULT_SETTINGS = {
   voice: true,
   getReady: 3,      // seconds of "get ready" countdown before timed sets
   restTimer: true,  // rest countdown between sets
+  exerciseRest: 30, // seconds of rest after finishing an exercise (0 = off)
   keepAwake: true,
 };
 

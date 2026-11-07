@@ -17,7 +17,7 @@ export const EXERCISES = [
     name: 'Squat',
     area: 'Legs',
     type: 'reps',
-    sets: 3, repsMin: 8, repsMax: 10, rest: 60,
+    sets: 3, repsMin: 8, repsMax: 10, rest: 30,
     steps: [
       'Stand with your feet shoulder-width apart.',
       'Bend down until your knees are at roughly 90 degrees, then press back up.',
@@ -31,7 +31,7 @@ export const EXERCISES = [
     name: 'Single-leg calf raise on step',
     area: 'Legs',
     type: 'reps',
-    sets: 3, repsMin: 8, repsMax: 10, rest: 45,
+    sets: 3, repsMin: 8, repsMax: 10, rest: 30,
     perSide: true,
     steps: [
       'Stand on the edge of a step (a stair or bench also works) so your heels are free.',
@@ -46,7 +46,7 @@ export const EXERCISES = [
     name: 'Step-up with knee raise',
     area: 'Legs',
     type: 'reps',
-    sets: 3, repsMin: 8, repsMax: 10, rest: 60,
+    sets: 3, repsMin: 8, repsMax: 10, rest: 30,
     weight: '2 × 4 kg',
     steps: [
       'Use two steps of the stairs, holding a 4 kg weight in each hand.',
@@ -64,7 +64,7 @@ export const EXERCISES = [
     name: 'Single-leg balance on cushion',
     area: 'Balance',
     type: 'time',
-    sets: 3, duration: 30, rest: 20,
+    sets: 3, duration: 30, rest: 30,
     perSide: true,
     steps: [
       'Stand on a cushion or a folded mat.',
@@ -77,7 +77,7 @@ export const EXERCISES = [
     name: 'Standing row with band',
     area: 'Upper back',
     type: 'reps',
-    sets: 3, repsMin: 10, repsMax: 10, rest: 45,
+    sets: 3, repsMin: 10, repsMax: 10, rest: 30,
     steps: [
       'Anchor the band low on the wall bars.',
       'Stand with feet apart, facing the wall, one handle in each hand.',
@@ -91,7 +91,7 @@ export const EXERCISES = [
     name: 'Pelvic tilt with small sit-ups',
     area: 'Core',
     type: 'reps',
-    sets: 3, repsMin: 8, repsMax: 10, rest: 45,
+    sets: 3, repsMin: 8, repsMax: 10, rest: 30,
     steps: [
       'Lie on your back with knees bent and feet on the floor.',
       'Press your lower back down into the floor.',
@@ -118,7 +118,7 @@ export const EXERCISES = [
     name: 'Lying hamstring stretch',
     area: 'Stretch',
     type: 'time',
-    sets: 3, duration: 20, rest: 10,
+    sets: 3, duration: 20, rest: 30,
     perSide: true,
     steps: [
       'Lie on your back.',
@@ -132,7 +132,7 @@ export const EXERCISES = [
     name: 'Diagonal lift on ball',
     area: 'Back',
     type: 'reps',
-    sets: 3, repsMin: 10, repsMax: 10, rest: 45, // default
+    sets: 3, repsMin: 10, repsMax: 10, rest: 30, // default
     steps: [
       'Lie on your stomach over the ball.',
       'Lift one arm and the opposite leg until they are in line with your body.',
@@ -145,7 +145,7 @@ export const EXERCISES = [
     name: 'Glute bridge on exercise ball',
     area: 'Back',
     type: 'hold',
-    sets: 3, repsMin: 8, repsMax: 8, hold: 4, relax: 4, rest: 45, // default reps
+    sets: 3, repsMin: 8, repsMax: 8, hold: 4, relax: 4, rest: 30, // default reps
     steps: [
       'Lie with both legs a little way out on the ball, so you get a long lever.',
       'Keep your arms along your sides.',
@@ -173,7 +173,7 @@ export const EXERCISES = [
     name: 'Side steps with band',
     area: 'Hips',
     type: 'reps',
-    sets: 3, repsMin: 10, repsMax: 10, rest: 45, // default
+    sets: 3, repsMin: 10, repsMax: 10, rest: 30, // default
     perSide: true,
     steps: [
       'Take small steps sideways with your feet pointing straight ahead.',
@@ -186,7 +186,7 @@ export const EXERCISES = [
     name: 'Standing biceps curl with dumbbells',
     area: 'Arms',
     type: 'reps',
-    sets: 3, repsMin: 10, repsMax: 10, rest: 45, // default
+    sets: 3, repsMin: 10, repsMax: 10, rest: 30, // default
     steps: [
       'Stand with the dumbbells hanging down at your sides.',
       'Bend your elbows and lift the dumbbells all the way up while turning your palms outward.',
@@ -198,7 +198,7 @@ export const EXERCISES = [
     name: 'Push-up on knees',
     area: 'Upper body',
     type: 'reps',
-    sets: 3, repsMin: 8, repsMax: 10, rest: 60, // default
+    sets: 3, repsMin: 8, repsMax: 10, rest: 30, // default
     steps: [
       'Get on your knees with a stiff, braced body.',
       'Place your hands slightly wider than shoulder-width apart.',
@@ -223,7 +223,7 @@ export const EXERCISES = [
     name: 'Dips',
     area: 'Upper body',
     type: 'reps',
-    sets: 3, repsMin: 8, repsMax: 8, rest: 60, // default
+    sets: 3, repsMin: 8, repsMax: 8, rest: 30, // default
     steps: [
       'Let your body weight hang on straight arms.',
       'Keep your shoulders down, away from your ears.',
