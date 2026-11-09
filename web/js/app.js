@@ -370,15 +370,17 @@ function viewHome() {
       <div class="eyebrow">Today</div>
       <h2>Done for today ✓</h2>
       <p class="muted">Great work. Tomorrow is a rest day – take a short walk.</p>
-      ${walkedToday ? '' : '<button class="btn secondary" data-act="walk">Log a walk</button>'}
+      <button class="btn primary big" data-act="start">Start another workout</button>
+      ${walkedToday ? '' : '<button class="btn ghost" data-act="walk">Log a walk</button>'}
     </div>`;
   } else if (status === 'rest') {
     card = `<div class="card hero rest">
       <div class="eyebrow">Rest day</div>
       <h2>Take a short walk 🚶</h2>
-      <p class="muted">You trained yesterday. The plan is every other day.</p>
-      ${walkedToday ? '<p class="ok">✓ Walk logged today</p>' : '<button class="btn primary big" data-act="walk">Log a walk</button>'}
-      <button class="btn ghost" data-act="start">Train anyway</button>
+      <p class="muted">You trained yesterday. The plan is every other day, but you can train whenever you like.</p>
+      ${walkedToday ? '<p class="ok">✓ Walk logged today</p>' : ''}
+      <button class="btn primary big" data-act="start">Start workout</button>
+      ${walkedToday ? '' : '<button class="btn ghost" data-act="walk">Log a walk</button>'}
     </div>`;
   } else {
     card = `<div class="card hero train">
