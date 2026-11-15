@@ -19,7 +19,7 @@ Android asks you to allow "Install unknown apps" for Back Rehab.)
 3. Push to `main`. GitHub Actions builds the APK and publishes Release `v1.0.1`.
 
 ## Features
-- All 16 exercises with step-by-step instructions
+- All 17 exercises with step-by-step instructions
 - Tap-to-count reps, countdown timers, hold/relax timer, rest timer (+15 s / skip)
 - Left/right sides with voice cue "Switch to right leg"
 - Beeps, vibration, spoken cues, keeps the screen on during workouts

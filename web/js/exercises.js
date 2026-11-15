@@ -1,4 +1,4 @@
-// Rehab plan: "Back rehabilitation" from Aktiv Fysioterapi Nittedal (ExorLive, 05.11.2026).
+// Rehab plan: "Back rehabilitation" from Aktiv Fysioterapi Nittedal (ExorLive, updated plan Nov 2026).
 // Translated from Norwegian. Values marked "default" were not given on the sheet
 // and can be changed in Settings inside the app.
 //
@@ -14,11 +14,13 @@ export const PLAN_NOTE = 'Train every other day. On rest days, take short walks.
 const SHEET = [
   {
     id: 'squat',
-    name: 'Squat',
+    name: 'Squat with kettlebell',
     area: 'Legs',
     type: 'reps',
+    weight: '10 kg kettlebell',
     sets: 3, repsMin: 8, repsMax: 10, rest: 30,
     steps: [
+      'Hold a 10 kg kettlebell in front of your chest.',
       'Stand with your feet shoulder-width apart.',
       'Bend down until your knees are at roughly 90 degrees, then press back up.',
       'Keep your back straight and look straight ahead.',
@@ -28,35 +30,20 @@ const SHEET = [
   {
     id: 'calf-raise',
     sideWord: 'leg',
-    name: 'Single-leg calf raise on step',
+    name: 'Single-leg calf raise on step with weight',
     area: 'Legs',
     type: 'reps',
+    weight: 'Hold a weight',
     sets: 3, repsMin: 8, repsMax: 10, rest: 30,
     perSide: true,
     steps: [
       'Stand on the edge of a step (a stair or bench also works) so your heels are free.',
+      'Hold a weight (e.g. a dumbbell or the kettlebell) in your hand.',
       'Keep your feet about hip-width apart.',
       'Lift your heels and press up onto your toes.',
       'Lower back to the starting position and repeat.',
     ],
     tip: 'Can be done with or without holding on to something for support.',
-  },
-  {
-    id: 'step-up',
-    name: 'Step-up with knee raise',
-    area: 'Legs',
-    type: 'reps',
-    sets: 3, repsMin: 8, repsMax: 10, rest: 30,
-    weight: '2 × 4 kg',
-    steps: [
-      'Use two steps of the stairs, holding a 4 kg weight in each hand.',
-      'Place one foot on the step in front of you. Make sure knee and toes point straight ahead.',
-      'Put all your weight on the leg on the step and push yourself up on it.',
-      'Tighten the front of the thigh and your glutes so the standing leg straightens fully.',
-      'Lift the opposite knee up in a bent position.',
-      'Lower yourself slowly and repeat with the other leg.',
-    ],
-    tip: 'Alternate legs on each rep.',
   },
   {
     id: 'balance',
@@ -111,21 +98,6 @@ const SHEET = [
       'Do not go all the way to the end position.',
     ],
     tip: 'Move slowly and smoothly.',
-  },
-  {
-    id: 'hamstring-stretch',
-    sideWord: 'leg',
-    name: 'Lying hamstring stretch',
-    area: 'Stretch',
-    type: 'time',
-    sets: 3, duration: 20, rest: 30,
-    perSide: true,
-    steps: [
-      'Lie on your back.',
-      'Lift one leg and hold around it with your hands.',
-      'Hold the stretch for 10–20 seconds.',
-    ],
-    tip: 'The sheet says 2–3 sets.',
   },
   {
     id: 'diagonal-lift-ball',
@@ -231,6 +203,51 @@ const SHEET = [
       'Press back up.',
     ],
   },
+  {
+    id: 'pull-up',
+    name: 'Pull-up',
+    area: 'Upper back',
+    type: 'reps',
+    sets: 3, repsMin: 5, repsMax: 8, rest: 30, // default – not given on sheet
+    steps: [
+      'Hang from the bar with a wide grip.',
+      'Pull yourself straight up until your neck is level with the bar.',
+      'Lower yourself slowly back down.',
+      'Keep your gaze forward and slightly down throughout the movement.',
+    ],
+    tip: 'If you can\'t do full reps yet, do as many as you can with good form.',
+  },
+  {
+    id: 'pallof-press',
+    name: 'Standing Pallof press with band',
+    area: 'Core',
+    type: 'reps',
+    sets: 3, repsMin: 10, repsMax: 10, rest: 30, // default – not given on sheet
+    perSide: true,
+    steps: [
+      'Stand upright with your side to where the band is anchored.',
+      'Hold the handle with both hands at chest height, close to your body.',
+      'Brace your stomach and back.',
+      'Press your hands straight out in front of you without letting your body twist.',
+      'Bring your hands slowly back to your chest.',
+    ],
+    tip: 'Do one side, then turn around and do the other side.',
+  },
+  {
+    id: 'hamstring-stretch',
+    sideWord: 'leg',
+    name: 'Lying hamstring stretch',
+    area: 'Stretch',
+    type: 'time',
+    sets: 3, duration: 20, rest: 30,
+    perSide: true,
+    steps: [
+      'Lie on your back.',
+      'Lift one leg and hold around it with your hands.',
+      'Hold the stretch for 10–20 seconds.',
+    ],
+    tip: 'The sheet says 2–3 sets.',
+  },
 ];
 
 // Workout order: warm up the back first, then everything standing, then the
@@ -239,14 +256,15 @@ const SHEET = [
 const ORDER = [
   'cat-cow',                 // warm-up: mobility on all fours
   'seated-pelvic-tilt-ball', // warm-up: mobility sitting on the ball
-  'squat',                   // standing – legs
-  'step-up',                 // stairs
-  'calf-raise',              // stairs
+  'squat',                   // standing – kettlebell
+  'calf-raise',              // step + weight
   'balance',                 // cushion / folded mat
   'band-side-steps',         // band
   'band-row',                // band on the wall bars
+  'pallof-press',            // band, standing side-on
   'biceps-curl',             // dumbbells
-  'dips',                    // bench / chair
+  'pull-up',                 // bar
+  'dips',                    // dip bars / bench
   'knee-pushup',             // floor
   'knee-plank',              // floor
   'diagonal-lift-ball',      // lying on the ball

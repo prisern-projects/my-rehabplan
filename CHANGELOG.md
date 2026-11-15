@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.0] – 2026-11-15
+Updated plan from the physio (17 exercises):
+- New: Pull-up (3 × 5–8).
+- New: Standing Pallof press with band (3 × 10 each side).
+- Squat is now done with a 10 kg kettlebell.
+- Single-leg calf raise is now done holding a weight.
+- Removed: Step-up with knee raise.
+
 ## [1.0.6] – 2026-11-09
 - "Start workout" is always on the home screen – on rest days and after you've already trained today.
 
