@@ -262,8 +262,8 @@ const ORDER = [
   'band-side-steps',         // band
   'band-row',                // band on the wall bars
   'pallof-press',            // band, standing side-on
-  'biceps-curl',             // dumbbells
   'pull-up',                 // bar
+  'biceps-curl',             // dumbbells
   'dips',                    // dip bars / bench
   'knee-pushup',             // floor
   'knee-plank',              // floor

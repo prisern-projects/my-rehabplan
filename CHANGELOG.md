@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.1.1] – 2026-11-16
+- Pull-up now comes before biceps curl.
+
 ## [1.1.0] – 2026-11-15
 Updated plan from the physio (17 exercises):
 - New: Pull-up (3 × 5–8).
