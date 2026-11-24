@@ -46,20 +46,6 @@ const SHEET = [
     tip: 'Can be done with or without holding on to something for support.',
   },
   {
-    id: 'balance',
-    sideWord: 'leg',
-    name: 'Single-leg balance on cushion',
-    area: 'Balance',
-    type: 'time',
-    sets: 3, duration: 30, rest: 30,
-    perSide: true,
-    steps: [
-      'Stand on a cushion or a folded mat.',
-      'Stand on one leg with a slight bend in the knee.',
-    ],
-    tip: 'Challenge yourself by moving the other leg around.',
-  },
-  {
     id: 'band-row',
     name: 'Standing row with band',
     area: 'Upper back',
@@ -100,6 +86,20 @@ const SHEET = [
     tip: 'Move slowly and smoothly.',
   },
   {
+    id: 'dead-bug',
+    name: 'Dead bug',
+    area: 'Core',
+    type: 'reps',
+    sets: 3, repsMin: 10, repsMax: 10, rest: 30, // default – not given on sheet
+    steps: [
+      'Lie on your back with hips and knees bent to 90 degrees and your arms raised above your chest.',
+      'Activate the lowest, deepest part of your stomach muscles: pull your belly button in toward your spine and make a "flat stomach".',
+      'At the same time, lower one arm and the opposite leg.',
+      'Bring them back up and repeat with the other arm and leg.',
+    ],
+    tip: 'Keep your lower back pressed to the floor. Count each side as one rep.',
+  },
+  {
     id: 'diagonal-lift-ball',
     name: 'Diagonal lift on ball',
     area: 'Back',
@@ -113,17 +113,17 @@ const SHEET = [
     tip: 'Count one rep per side lifted.',
   },
   {
-    id: 'glute-bridge-ball',
-    name: 'Glute bridge on exercise ball',
+    id: 'bridge-leg-curl-ball',
+    name: 'Glute bridge and leg curl on ball',
     area: 'Back',
-    type: 'hold',
-    sets: 3, repsMin: 8, repsMax: 8, hold: 4, relax: 4, rest: 30, // default reps
+    type: 'reps',
+    sets: 3, repsMin: 10, repsMax: 10, rest: 30, // default – not given on sheet
     steps: [
-      'Lie with both legs a little way out on the ball, so you get a long lever.',
-      'Keep your arms along your sides.',
-      'Squeeze your glutes together and lift your pelvis and lower back off the floor.',
-      'The whole lower leg rests on the ball.',
-      'Hold for 3–5 seconds, then rest for the same amount of time.',
+      'Lie with both legs on the ball and your arms along your sides.',
+      'Find a neutral position in your back and pelvis and make a "flat stomach".',
+      'Lift your pelvis until you are resting on your shoulder blades.',
+      'Pull your feet toward your bottom by bending your knees.',
+      'Roll the ball back out and repeat.',
     ],
   },
   {
@@ -158,6 +158,7 @@ const SHEET = [
     name: 'Standing biceps curl with dumbbells',
     area: 'Arms',
     type: 'reps',
+    weight: '10 kg',
     sets: 3, repsMin: 10, repsMax: 10, rest: 30, // default
     steps: [
       'Stand with the dumbbells hanging down at your sides.',
@@ -166,28 +167,44 @@ const SHEET = [
     ],
   },
   {
-    id: 'knee-pushup',
-    name: 'Push-up on knees',
+    id: 'pushup',
+    name: 'Push-up',
     area: 'Upper body',
     type: 'reps',
-    sets: 3, repsMin: 8, repsMax: 10, rest: 30, // default
+    sets: 3, repsMin: 8, repsMax: 10, rest: 30,
     steps: [
-      'Get on your knees with a stiff, braced body.',
-      'Place your hands slightly wider than shoulder-width apart.',
-      'Lower your body toward the floor and press back up.',
-      'Do not bend at the hips.',
+      'Place your hands about shoulder-width apart.',
+      'Keep your body stable and straight.',
+      'Lower yourself in a controlled way toward the floor, chest first.',
+      'Press back up until your arms are fully straight.',
+      'Avoid arching your lower back or bending at the hips.',
     ],
   },
   {
-    id: 'knee-plank',
-    name: 'Plank on knees and elbows',
+    id: 'plank',
+    name: 'Plank on elbows and toes',
     area: 'Core',
     type: 'time',
-    sets: 3, duration: 20, rest: 30, // default
+    sets: 2, duration: 30, rest: 30,
     steps: [
-      'Lie on a mat.',
-      'Support yourself on your elbows and knees.',
-      'Keep your back straight like a plank for the whole exercise.',
+      'Support yourself on your toes and elbows.',
+      'Find the neutral position of your back and pelvis.',
+      'Make a "flat stomach" and hold this position.',
+    ],
+    tip: 'The sheet says 20–30 seconds – start with what you can hold with good form.',
+  },
+  {
+    id: 'plank-pelvis-tilt',
+    sameSheetNo: true, // second part of sheet no. 13
+    name: 'Plank with side-to-side pelvis tilt',
+    area: 'Core',
+    type: 'reps',
+    sets: 2, repsMin: 5, repsMax: 5, rest: 30,
+    perSide: true,
+    steps: [
+      'Get into the plank on elbows and toes.',
+      'Tilt your pelvis slowly from side to side.',
+      'Do 5 to each side.',
     ],
   },
   {
@@ -258,26 +275,31 @@ const ORDER = [
   'seated-pelvic-tilt-ball', // warm-up: mobility sitting on the ball
   'squat',                   // standing – kettlebell
   'calf-raise',              // step + weight
-  'balance',                 // cushion / folded mat
   'band-side-steps',         // band
   'band-row',                // band on the wall bars
   'pallof-press',            // band, standing side-on
   'pull-up',                 // bar
   'biceps-curl',             // dumbbells
   'dips',                    // dip bars / bench
-  'knee-pushup',             // floor
-  'knee-plank',              // floor
+  'pushup',                  // floor
+  'plank',                   // floor
+  'plank-pelvis-tilt',       // floor, straight after the plank
   'diagonal-lift-ball',      // lying on the ball
-  'glute-bridge-ball',       // lying on your back, legs on the ball
+  'bridge-leg-curl-ball',    // lying on your back, legs on the ball
+  'dead-bug',                // lying on your back
   'pelvic-tilt-situp',       // lying on your back
   'hamstring-stretch',       // cool-down stretch
 ];
 
+// Number each exercise as on the sheet (an entry marked sameSheetNo shares the previous number).
+let n = 0;
+const SHEET_NO = Object.fromEntries(SHEET.map((e) => [e.id, e.sameSheetNo ? n : ++n]));
+
 export const EXERCISES = ORDER.map((id) => {
-  const i = SHEET.findIndex((e) => e.id === id);
-  return { ...SHEET[i], sheetNo: i + 1 };
+  const e = SHEET.find((x) => x.id === id);
+  return e && { ...e, sheetNo: SHEET_NO[id] };
 });
 
-if (EXERCISES.length !== SHEET.length || EXERCISES.some((e) => !e.id)) {
+if (EXERCISES.length !== SHEET.length || EXERCISES.some((e) => !e)) {
   throw new Error('ORDER in exercises.js must list every exercise exactly once');
 }

@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.0] – 2026-11-24
+New plan from the physio:
+- New: Dead bug (3 × 10).
+- New: Glute bridge and leg curl on ball (3 × 10) – replaces the glute bridge hold.
+- Push-up is now a full push-up (3 × 8–10) – replaces push-up on knees.
+- Plank is now on elbows and toes, 2 × 30 s, followed by side-to-side pelvis tilts (2 × 5 each side) – replaces the knee plank.
+- Biceps curl now with 10 kg.
+- Removed: Single-leg balance.
+
 ## [1.1.1] – 2026-11-16
 - Pull-up now comes before biceps curl.
 
