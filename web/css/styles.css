@@ -260,3 +260,7 @@ textarea, .sheet input[type=text] { width: 100%; border: 1px solid var(--line); 
 .reps-box input:focus { outline: none; }
 .reps-box span { color: var(--muted); font-size: 14px; font-weight: 600; }
 .reps-hint { margin: 0; }
+
+/* keep room between the main buttons and the Previous/Skip bar */
+.wmain { padding-bottom: 28px; }
+.wfoot .btn.ghost { color: var(--muted); font-weight: 600; }

@@ -756,8 +756,22 @@ const actions = {
   'timer-skip-set': () => { const ex = curEx(); completeSet(ex.type === 'time' ? { secs: ex.duration, manual: true } : { reps: ex.repsMax, manual: true }); },
   'rest-add': () => runner.add(15),
   'rest-skip': () => { runner.stop(); S.phase = 'work'; persist(); fx.start(); renderWorkout(); },
-  prev: prevExercise,
-  skip: skipExercise,
+  // Previous / Skip ask first, so a stray tap doesn't jump exercises.
+  prev: () => {
+    const target = sessionList()[S.idx - 1];
+    if (!target) return;
+    openSheet(`<h3>Go back to the previous exercise?</h3><p class="muted">${esc(target.name)}</p>
+      <button class="btn secondary" data-act="prev-yes">‹ Go back</button>
+      <button class="btn primary big" data-act="close-sheet">Cancel – stay here</button>`);
+  },
+  skip: () => {
+    const target = sessionList()[S.idx + 1];
+    openSheet(`<h3>Skip ${esc(curEx().name)}?</h3><p class="muted">${target ? 'Next: ' + esc(target.name) : 'This is the last exercise – skipping finishes the workout.'}</p>
+      <button class="btn secondary" data-act="skip-yes">Skip ›</button>
+      <button class="btn primary big" data-act="close-sheet">Cancel – stay here</button>`);
+  },
+  'prev-yes': () => { closeSheet(); prevExercise(); },
+  'skip-yes': () => { closeSheet(); skipExercise(); },
   pain: (el) => {
     document.querySelectorAll('#pain button').forEach((b) => b.classList.toggle('on', b === el));
     ui.pain = Number(el.dataset.n);

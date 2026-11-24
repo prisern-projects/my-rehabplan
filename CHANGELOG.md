@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2.1] – 2026-11-24
+- Previous and Skip now ask for confirmation, with a big Cancel button, so a stray tap doesn't change exercise.
+- More space between the main buttons and the Previous/Skip bar.
+
 ## [1.2.0] – 2026-11-24
 New plan from the physio:
 - New: Dead bug (3 × 10).
